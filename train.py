@@ -38,8 +38,7 @@ def training(model, train_x, train_y, epochs):
         loss = criterion(pre_y, train_y)
         loss.backward()
         optimizer.step()
-        epoch_loss.append(loss)
-        # print(loss)
+        epoch_loss.append(loss.item())
         if loss < beast_loss:
             beast_loss = loss
             checkpoint = {
@@ -52,7 +51,7 @@ def training(model, train_x, train_y, epochs):
                 # assert model in ['mlp','dae','idae']
                 save_path = f'./checkpoint/{type(model).__name__}_ckpt_{model_time}.pt'
                 torch.save(checkpoint, save_path)
-    return model, save_path
+    return epoch_loss
 
     # elif isinstance(model, DAE):
     #     save_path = f'./checkpoint/DAE_ckpt_{model_time}.pt'
@@ -77,23 +76,22 @@ def set_seed(seed):
 
 def main(model):
     set_seed(42)
-    model_name = training(model, smote_x, smote_y, 1500)
-    return model_name
+    epochs_loss = training(model, smote_x, smote_y, 1500)
+    print(epochs_loss)
+    return epochs_loss
 
 
-if __name__ == '__main__':
-    # mlp = MLP()
-    # main(mlp)
-    #
-    dae = DAE()
-    model_name = main(dae)
-    # print(model_name)
-    # print(model_path)
-
-    # main(idae)
-    # idae = Imporved_DAE()
+# if __name__ == '__main__':
+mlp = MLP()
+mlp_loss = main(mlp)
 #
+dae = DAE()
+dae_loss = main(dae)
+# print(model_name)
+# print(model_path)
 
+idae = Imporved_DAE()
+idae_loss = main(idae)
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")

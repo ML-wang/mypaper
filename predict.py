@@ -7,23 +7,36 @@
 
 import torch
 from train import set_seed
-import numpy as np
+
 from models.mlp import MLP
 from models.DAE import DAE
 from models.Improved_DAE import Imporved_DAE
 from datasets import test_x,test_y,config
 from sklearn.metrics import accuracy_score,recall_score,precision_score,f1_score
-from train import model_name,model_path
+
 
 
 def load_model_predict(model_name,model_path, test_x):
     set_seed(42)
-    if model_name == 'mlp':
+    if isinstance(model_name,MLP):
         model = MLP()
         checkpoint = torch.load(model_path)
         model.load_state_dict(checkpoint['model_state_dict'])
-        output = model(test_x)
-    return output
+        out_put = model(test_x)
+        return out_put
+    elif isinstance(model_name,DAE):
+        model = DAE()
+        checkpoint = torch.load(model_path)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        out_put = model(test_x)
+        return out_put
+    elif isinstance(model_name,Imporved_DAE):
+        model = Imporved_DAE()
+        checkpoint = torch.load(model_path)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        out_put = model(test_x)
+        return out_put
+
 
 
 def models_metrics(label_result:torch.tensor,test_y):
@@ -40,18 +53,18 @@ def models_metrics(label_result:torch.tensor,test_y):
 if __name__ == '__main__':
 
     # mlp = MLP()
-    # result_mlp = predict(mlp, 'save_models/MLP_ckpt_06-27_10-34-37.pt', test_x)
+    # result_mlp = load_model_predict(mlp, 'save_models/MLP_ckpt_06-27_10-34-37.pt', test_x)
     # label_result_mlp = torch.argmax(result_mlp,dim=1)
     # models_metrics(label_result_mlp, test_y)
 
     dae = DAE()
-    result_dae = predict(dae,'./checkpoint/DAE_ckpt_06-27_10-43-50.pt',test_x)
+    result_dae = load_model_predict(dae,'./checkpoint/DAE_ckpt_06-27_16-06-48.pt',test_x)
     label_result_dae = torch.argmax(result_dae,dim=1)
     models_metrics(label_result_dae, test_y)
 
 
     # idae = Imporved_DAE()
-    # result_idae = predict(idae, 'save_models/IDAE_ckpt_06-27_10-30-35.pt', test_x)
+    # result_idae = load_model_predict(idae, 'save_models/IDAE_ckpt_06-27_10-30-35.pt', test_x)
     # label_result_idae = torch.argmax(result_idae,dim=1)
     # models_metrics(label_result_idae, test_y)
 
