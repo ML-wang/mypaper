@@ -7,9 +7,9 @@
 
 import torch
 import torch.nn as nn
-class AE(nn.Module):
+class DAE(nn.Module):
     def __init__(self) -> None:
-        super(AE,self).__init__()
+        super(DAE,self).__init__()
         self.encoder = nn.Sequential(
            nn.Linear(12,10),
            nn.ReLU(),
@@ -65,3 +65,10 @@ class AE(nn.Module):
             if isinstance(module,nn.Linear):
                 nn.init.xavier_normal_(module.weight)
                 nn.init.normal_(module.bias,0,1)
+
+
+if __name__ == '__main__':
+    config = Config()
+    dae = DAE()
+    output = dae(config.smote_df)
+    print(output)

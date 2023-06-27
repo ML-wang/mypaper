@@ -69,3 +69,9 @@ class Imporved_DAE(nn.Module):
             if isinstance(module,nn.Linear):
                 nn.init.xavier_normal_(module.weight)
                 nn.init.normal_(module.bias,0,1)
+
+if __name__ == '__main__':
+    config = Config()
+    dae = DAE()
+    output = dae(config.smote_df)
+    print(output)
