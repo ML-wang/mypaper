@@ -21,9 +21,9 @@ class Config:
         self.pro_data_path = os.path.join(CURRENT_DIR_PATH, 'data\proccessed_data.csv')
         self.classifier_hid = [10,8,6]
         self.lr = 0.05
-        self.pic_save_dir = os.path.join(CURRENT_DIR_PATH,'output')
+        self.pic_save_dir = os.path.join(CURRENT_DIR_PATH, 'outputs')
         self.beast_loss = 1.2
-        self.model_save_dir = os.path.join(CURRENT_DIR_PATH, 'output')
+        self.model_save_dir = os.path.join(CURRENT_DIR_PATH, 'outputs')
 #         self.smote_df = pd.read_csv(os.path.join(CURRENT_DIR_PATH, 'data\smote_df.csv'))
 #         self.test_df = pd.read_csv(os.path.join(CURRENT_DIR_PATH, 'data\\test_df.csv'))
 #
@@ -34,7 +34,7 @@ class Config:
 # args = parser.parse_args()
 # print(args.is_action)
 
-if __name__ == '__main__':
-    con = Config()
-    print(con.test_df)
+# if __name__ == '__main__':
+#     con = Config()
+#     print(con.test_df)
 

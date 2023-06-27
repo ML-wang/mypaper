@@ -9,6 +9,7 @@ import torch.nn as nn
 import warnings
 warnings.filterwarnings('ignore')
 # from config import Config
+from datasets import smote_x
 
 class MLP(nn.Module):
     def __init__(self) -> None:
@@ -30,7 +31,6 @@ class MLP(nn.Module):
 
 
 if __name__ == '__main__':
-    config = Config()
     mlp = MLP()
-    output = mlp(config.smote_df)
+    output = mlp(smote_x)
     print(output)

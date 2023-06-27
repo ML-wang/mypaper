@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import StandardScaler
 import os
+import torch
 from config import Config
 
 
@@ -52,9 +53,17 @@ def split_train_test(config):
     return smote_df,test_df
 
 
-if __name__ == '__main__':
-    config = Config()
-    data = process_data(config)
-    smote_df,test_df, = split_train_test(config)
-    print('123')
+def to_tensor(data:pd.DataFrame):
+    smote_x = torch.tensor(data.iloc[:,:-1].values,dtype=torch.float)
+    smote_y = torch.tensor(data.iloc[:,-1].values)
+    return smote_x,smote_y
+
+
+# if __name__ == '__main__':
+config = Config()
+data = process_data(config)
+smote_df,test_df, = split_train_test(config)
+smote_x,smote_y = to_tensor(smote_df)
+test_x,test_y = to_tensor(test_df)
+# print(test_x)
 

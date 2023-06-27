@@ -7,6 +7,9 @@
 
 import torch
 import torch.nn as nn
+from datasets import smote_x
+import warnings
+warnings.filterwarnings('ignore')
 class DAE(nn.Module):
     def __init__(self) -> None:
         super(DAE,self).__init__()
@@ -33,7 +36,7 @@ class DAE(nn.Module):
         self.reset_weight
 
         self.mlp = nn.Sequential(
-           nn.Linear(2*12,10),
+           nn.Linear(12,10),
            nn.ReLU(),
            nn.Dropout(),
            nn.Linear(10,8),
@@ -51,8 +54,8 @@ class DAE(nn.Module):
         decoder = self.decoder(encoder)
         # print(decoder)
         # print(self.train_x)
-        out_put = self.mlp(torch.cat((decoder,self.train_x),1))
-        # out_put = self.mlp(decoder + self.train_x)
+        # out_put = self.mlp(torch.cat((decoder,self.train_x),1))
+        out_put = self.mlp(decoder)
         return out_put
 
     def reset_weight(self):
@@ -68,7 +71,6 @@ class DAE(nn.Module):
 
 
 if __name__ == '__main__':
-    config = Config()
     dae = DAE()
-    output = dae(config.smote_df)
+    output = dae(smote_x)
     print(output)

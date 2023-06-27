@@ -7,6 +7,10 @@
 
 import torch
 import torch.nn as nn
+from config import Config
+from datasets import smote_x
+import warnings
+warnings.filterwarnings('ignore')
 class Imporved_DAE(nn.Module):
     def __init__(self) -> None:
         super(Imporved_DAE,self).__init__()
@@ -71,7 +75,6 @@ class Imporved_DAE(nn.Module):
                 nn.init.normal_(module.bias,0,1)
 
 if __name__ == '__main__':
-    config = Config()
-    dae = DAE()
-    output = dae(config.smote_df)
+    idae = Imporved_DAE()
+    output = idae(smote_x)
     print(output)

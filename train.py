@@ -13,25 +13,29 @@ import random
 import os
 import numpy as np
 import warnings
+
 warnings.filterwarnings('ignore')
-from datasets import process_data,split_train_test
 from models.mlp import MLP
-from models.prepare import AE
-import time
+from models.DAE import DAE
+from models.Improved_DAE import Imporved_DAE
 from tqdm import tqdm
 import argparse
+from datasets import smote_x, smote_y
+import time
+
+model_time = time.strftime('%m-%d_%H-%M-%S', time.localtime())
 
 
-def training(model,train_x,train_y,epochs):
-    optimizer = optim.Adam(model.parameters(),lr=0.01)
+def training(model, train_x, train_y, epochs):
+    optimizer = optim.Adam(model.parameters(), lr=0.01)
     criterion = nn.CrossEntropyLoss()
     epoch_loss = []
-    beast_loss = 1.2
-    for epoch in tqdm(range(1,epochs+1)):
+    beast_loss = 2
+    for epoch in tqdm(range(1, epochs + 1)):
         optimizer.zero_grad()
         set_seed(42)
         pre_y = model(train_x)
-        loss = criterion(pre_y,train_y)
+        loss = criterion(pre_y, train_y)
         loss.backward()
         optimizer.step()
         epoch_loss.append(loss)
@@ -40,15 +44,24 @@ def training(model,train_x,train_y,epochs):
             beast_loss = loss
             checkpoint = {
                 'epoch': epoch,
-                'loss':loss,
+                'loss': loss,
                 'model_state_dict': model.state_dict(),
                 'optimizer_state_dict': optimizer.state_dict(),
             }
-            if isinstance(model, MLP):
-                torch.save(checkpoint, './checkpoint/MLP_ckpt_train_model2.pt')
-            elif isinstance(model, AE):
-                torch.save(checkpoint, './checkpoint/AE_ckpt_train_model4.pt')
+            if isinstance(model, (MLP, DAE, Imporved_DAE)):
+                # assert model in ['mlp','dae','idae']
+                save_path = f'./checkpoint/{type(model).__name__}_ckpt_{model_time}.pt'
+                torch.save(checkpoint, save_path)
+    return model, save_path
 
+    # elif isinstance(model, DAE):
+    #     save_path = f'./checkpoint/DAE_ckpt_{model_time}.pt'
+    #     torch.save(checkpoint, save_path)
+    #     return ['dae',f'./checkpoint/DAE_ckpt_{model_time}.pt']
+    # elif isinstance(model, Imporved_DAE):
+    #     save_path = f'./checkpoint/IDAE_ckpt_{model_time}.pt'
+    #     torch.save(checkpoint, save_path)
+    #     return ['idae',f'./checkpoint/IDAE_ckpt_{model_time}.pt']
 
 
 def set_seed(seed):
@@ -63,30 +76,32 @@ def set_seed(seed):
 
 
 def main(model):
-    data = process_data()
-    smote_df,test_df = split_train_test(data)
-    train_x,train_y = torch.tensor(smote_df.iloc[:,:-1].values,dtype=torch.float),\
-                      torch.tensor(smote_df.iloc[:,-1].values)
-
-
     set_seed(42)
-    training(model,train_x,train_y,1500)
+    model_name = training(model, smote_x, smote_y, 1500)
+    return model_name
+
 
 if __name__ == '__main__':
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
-    args = parser.parse_args()
-    print(args.is_action)
-
-    model_time = time.time()
-    ae = AE()
     # mlp = MLP()
-    main(ae)
     # main(mlp)
+    #
+    dae = DAE()
+    model_name = main(dae)
+    # print(model_name)
+    # print(model_path)
+
+    # main(idae)
+    # idae = Imporved_DAE()
+#
+
+
+# parser = argparse.ArgumentParser()
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# parser.add_argument("--model_name", default='Improved_DAE', action="store_true", help="model_name")
+# args = parser.parse_args()
+# print(args.is_action)
